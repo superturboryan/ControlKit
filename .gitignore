@@ -1,0 +1,13 @@
+project.xcworkspace/
+xcuserdata/
+
+*.xcworkspacezata
+*package.resolved
+*.xcconfig
+*.xcuserdatad
+*.xcbkptlist
+*.xcsettings
+*.xcworkspacedata
+*.DS_Store
+
+*SpotifyConfig.swift

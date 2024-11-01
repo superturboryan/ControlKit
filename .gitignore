@@ -7,7 +7,8 @@ xcuserdata/
 *.xcuserdatad
 *.xcbkptlist
 *.xcsettings
+*.xcscheme
 *.xcworkspacedata
 *.DS_Store
 
-*SpotifyConfig.swift
+*.build

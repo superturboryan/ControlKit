@@ -1,0 +1,49 @@
+name: 🧩 Build Package
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps: 
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
+
+      - name: Check last commit for skip keyword
+        run: python workflow_scripts/check_latest_commit_for_skip.py >> $GITHUB_ENV
+
+      - name: ⏩ SKIPPING REMAINING STEPS 👀
+        if: env.should_skip == 'true'
+        run: exit 0
+
+      - name: Setup Swift
+        if: env.should_skip == 'false'
+        uses: swift-actions/setup-swift@v2.0.0
+        with:
+          swift-version: '5.10' # Should match swift-tools-version in Package.swift
+    
+      - name: Build Control Library
+        if: env.should_skip == 'false'
+        run:  |
+          xcodebuild -scheme Control \
+                     -sdk iphonesimulator \
+                     -configuration Release \
+                     -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                     BUILD_DIR=$(pwd)/build/Control
+
+      - name: Build Controllers Library
+        if: env.should_skip == 'false'
+        run: |
+          xcodebuild -scheme Controllers \
+                     -sdk iphonesimulator \
+                     -configuration Release \
+                     -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                     BUILD_DIR=$(pwd)/build/Controllers

@@ -67,7 +67,15 @@ extension SystemController: @preconcurrency PlaybackController {
     }
     
     private func updateIsAudioPlaying() {
-        isAudioPlaying = Control.Playback.isAudioPlaying
+        switch selectedPlaybackType {
+            
+        case .AppleMusic:
+            isAudioPlaying = appleMusic.isPlaying
+        case .Spotify:
+            isAudioPlaying = spotify.isPlaying
+        case .AVAudio:
+            isAudioPlaying = Control.Playback.isAudioPlaying
+        }
     }
 }
 

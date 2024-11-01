@@ -5,6 +5,7 @@
 
 import AVFAudio
 import MediaPlayer
+import OSLog
 
 public extension Control {
     
@@ -19,10 +20,14 @@ public extension Control {
         ///
         /// Playback that has been paused by this function can normally be resumed if the app playing the content has not been terminated.
         public static func togglePlayPause() {
-            try? avAudioSession.setActive(
-                isAudioPlaying,
-                options: .notifyOthersOnDeactivation
-            )
+            do {
+                try avAudioSession.setActive(
+                    isAudioPlaying,
+                    options: .notifyOthersOnDeactivation
+                )
+            } catch {
+                log.error("\(error.localizedDescription)")
+            }
         }
     }
 }
@@ -51,6 +56,11 @@ public extension Control.Playback {
             systemMusicPlayer.skipToPreviousItem()
         }
     }
+}
+
+private extension Control.Playback {
+    
+    static let log = Logger(subsystem: Control.subsystem, category: "Playback")
 }
 
 private extension MPMusicPlaybackState {

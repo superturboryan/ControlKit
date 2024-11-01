@@ -3,11 +3,14 @@
 //  ControlKit
 //
 
+import OSLog
 import SpotifyiOS
 import SwiftUI
 
 /// Wrapper for ``SPTAppRemote`` - use this to control playback from the Spotify app.
 public final class SpotifyController: NSObject, ObservableObject {
+    
+    @Published public var isPlaying: Bool = false
     
     lazy private var remote: SPTAppRemote = {
         let remote = SPTAppRemote(
@@ -19,6 +22,7 @@ public final class SpotifyController: NSObject, ObservableObject {
         )
         remote.connectionParameters.accessToken = accessToken
         remote.delegate = self
+        remote.playerAPI?.delegate = self
         return remote
     }()
     
@@ -86,16 +90,28 @@ extension SpotifyController: PlaybackController {
 extension SpotifyController: SPTAppRemoteDelegate {
     
     public func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
-        print("appRemoteDidEstablishConnection")
+        SpotifyController.log.info("SPTAppRemoteDelegate.appRemoteDidEstablishConnection")
     }
     
     public func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: (any Error)?) {
-        print("didFailConnectionAttemptWithError")
+        SpotifyController.log.info("SPTAppRemoteDelegate.didFailConnectionAttemptWithError")
     }
     
     public func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: (any Error)?) {
-        print("didDisconnectWithError")
+        SpotifyController.log.info("SPTAppRemoteDelegate.didDisconnectWithError")
     }
+}
+
+extension SpotifyController: SPTAppRemotePlayerStateDelegate {
+    
+    public func playerStateDidChange(_ playerState: any SPTAppRemotePlayerState) {
+        isPlaying = !playerState.isPaused
+    }
+}
+
+private extension SpotifyController {
+    
+    static let log = Logger(subsystem: Controllers.subsystem, category: "SpotifyController")
 }
 
 private extension SPTAppRemote {

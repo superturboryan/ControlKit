@@ -4,6 +4,7 @@
 //
 
 /// Describes an object that controls media/audio playback
+@MainActor
 protocol PlaybackController {
     
     func togglePlayPause()

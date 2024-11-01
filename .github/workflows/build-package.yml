@@ -1,0 +1,41 @@
+name: Build Package
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps: 
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2.0.0
+        with:
+          swift-version: '5.10' # Should match swift-tools-version in Package.swift
+    
+      - name: Build Control Library
+        run:  |
+          xcodebuild -scheme Control \
+                     -sdk iphonesimulator \
+                     -configuration Release \
+                     -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                     BUILD_DIR=$(pwd)/build/Control
+
+      - name: Build Controllers Library
+        run: |
+          xcodebuild -scheme Controllers \
+                     -sdk iphonesimulator \
+                     -configuration Release \
+                     -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                     BUILD_DIR=$(pwd)/build/Controllers
+
+      # Disabled until unit tests are added
+      # - name: Run tests
+      #   run: swift test -v
+

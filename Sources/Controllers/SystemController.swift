@@ -24,7 +24,7 @@ public final class SystemController: ObservableObject {
     public init() {}
 }
 
-extension SystemController: @preconcurrency PlaybackController {
+extension SystemController: PlaybackController {
     
     public func togglePlayPause() {
         switch selectedPlaybackType {

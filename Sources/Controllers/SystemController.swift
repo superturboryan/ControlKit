@@ -18,10 +18,12 @@ public final class SystemController: ObservableObject {
     @Published public var isMuted = false
     
     @Published public var appleMusic = AppleMusicController()
-    @Published public var spotify = SpotifyController()
+    @Published public var spotify: SpotifyController!
     @Published public var volume = VolumeController()
         
-    public init() {}
+    public init(spotifyConfig: SpotifyController.SpotifyConfig = .empty) {
+        spotify = SpotifyController(config: spotifyConfig)
+    }
 }
 
 extension SystemController: PlaybackController {

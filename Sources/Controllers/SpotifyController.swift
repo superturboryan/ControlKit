@@ -13,11 +13,11 @@ public final class SpotifyController: NSObject, ObservableObject {
     
     @Published public var isPlaying: Bool = false
     
-    lazy private var remote: SPTAppRemote = {
+    private lazy var remote: SPTAppRemote = {
         let remote = SPTAppRemote(
             configuration: SPTConfiguration(
-                clientID: SpotifyConfig.clientID,
-                redirectURL: URL(string: SpotifyConfig.redirectURL)!
+                clientID: config.clientID,
+                redirectURL: config.redirectURL
             ),
             logLevel: .debug
         )
@@ -30,13 +30,22 @@ public final class SpotifyController: NSObject, ObservableObject {
     @Control.Keychain("SpotifyAccessToken", default: nil)
     private var accessToken: String?
     
-    override public init() {
+    private let config: SpotifyConfig
+    
+    public init(
+        config: SpotifyConfig = .empty,
+        autoConnect: Bool = true
+    ) {
+        self.config = config
         super.init()
-        connect()
+        if autoConnect && config != .empty {
+            connect()
+        }
     }
     
     /// Deep links to the Spotify app where the authorization flow is completed before reopening the host app.
     public func authorize() {
+        // Using an empty string here will attempt to play the user's last song
         self.remote.authorizeAndPlayURI("")
     }
     
@@ -110,9 +119,24 @@ extension SpotifyController: SPTAppRemotePlayerStateDelegate {
     }
 }
 
-private extension SpotifyController {
+extension SpotifyController {
     
-    static let log = Logger(subsystem: Controllers.subsystem, category: "SpotifyController")
+    public struct SpotifyConfig: Equatable {
+        
+        let clientID: String
+        let redirectURL: URL
+        
+        public init(clientID: String, redirectURL: String) {
+            self.clientID = clientID
+            self.redirectURL = URL(string: redirectURL)!
+        }
+        
+        public static var empty: Self {
+            .init(clientID: "", redirectURL: "")
+        }
+    }
+    
+    private static let log = Logger(subsystem: Controllers.subsystem, category: "SpotifyController")
 }
 
 private extension SPTAppRemote {

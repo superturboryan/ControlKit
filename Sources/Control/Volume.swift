@@ -11,31 +11,72 @@ public extension Control {
     @MainActor
     enum Volume {
         
-        /// Subscribe to `volume` via ``VolumeController.volume`` `@Published` property.
+        /// Subscribe to `volume` via ``VolumeController/volume`` `@Published` property.
+        ///
+        /// - Important: Updating this property will _unmute_ the system volume. The volume level prior to being muted will
+        /// be ignored when setting the volume via this property.
         public static var volume: Float {
-            get { MPVolumeView.volume }
-            set { MPVolumeView.volume = newValue }
+            get {
+                MPVolumeView.volume
+            }
+            set {
+                if newValue != 0 && isMuted {
+                    isMuted.toggle()
+                }
+                MPVolumeView.volume = newValue
+            }
         }
         
-        /// Subscribe to `isMuted` via ``VolumeController.isMuted`` `@Published` property.
-        static var isMuted = false
+        /// Subscribe to `isMuted` via ``VolumeController/isMuted`` `@Published` property.
+        public static var isMuted = false {
+            didSet {
+                if isMuted {
+                    mutedVolumeLevel = volume
+                }
+                volume = isMuted ? 0 : mutedVolumeLevel
+            }
+        }
         
-        private static var mutedValue: Float = 0
-        
-        public static func increaseVolume(_ amount: Float = 0.1) {
+        /// Increments the system volume, mimicking when a user taps the volume rocker on their phone.
+        ///
+        /// - Parameter amount: clamped between 0 and 1.0 using ``BetweenZeroAndOneInclusive``.
+        ///
+        /// - Important: Calling this function will _unmute_ the system volume. The increment amount is
+        /// applied to the volume level prior to it being muted.
+        public static func increaseVolume(
+            @BetweenZeroAndOneInclusive _ amount: Float = defaultVolumeStep
+        ) {
+            if isMuted {
+                isMuted.toggle()
+            }
             volume += amount
         }
         
-        public static func decreaseVolume(_ amount: Float = 0.1) {
+        /// Decrements the system volume, mimicking when a user taps the volume rocker on their phone.
+        ///
+        /// - Parameter amount: clamped between 0 and 1.0 using ``BetweenZeroAndOneInclusive``.
+        ///
+        /// - Important: Calling this function will _unmute_ the system volume. The decrement amount is
+        /// applied to the volume level prior to it being muted.
+        public static func decreaseVolume(
+            @BetweenZeroAndOneInclusive _ amount: Float = defaultVolumeStep
+        ) {
+            if isMuted {
+                isMuted.toggle()
+            }
             volume -= amount
         }
-        
-        public static func toggleMute() {
-            if !isMuted {
-                mutedValue = volume
-            }
-            isMuted.toggle()
-            volume = isMuted ? 0 : mutedValue
-        }
     }
+}
+
+extension Control.Volume {
+    
+    /// Refers to the volume level prior to it being muted.
+    private static var mutedVolumeLevel: Float = 0
+    
+    /// Refers to the amount (on scale from 0 to 1) the volume is incremented/decremented when the volume rocker is pressed on the phone.
+    public static let defaultVolumeStep: Float = 1 / maxVolumeButtonPresses
+    
+    /// Refers to the number of (volume rocker) button presses it takes for the phone's volume to go from 0 to max.
+    private static let maxVolumeButtonPresses: Float = 16
 }

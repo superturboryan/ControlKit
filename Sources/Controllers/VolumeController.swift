@@ -6,37 +6,35 @@
 import Control
 import SwiftUI
 
-/// Wrapper for ``Control.Volume``
+/// Wrapper for ``Control/Volume`` - use this to control and subscribe to the system volume, mimicking when the phone's volume rocker is pressed.
 @MainActor
 public final class VolumeController: ObservableObject {
     
     @Published public var volume: Float = Control.Volume.volume
-    @Published public var isMuted = false
+    @Published public private(set) var isMuted = Control.Volume.isMuted
     
-    public init() {
-        updateVolume()
-    }
+    public init() {}
     
     public func increaseVolume(_ amount: Float = 0.1) {
         Control.Volume.increaseVolume(amount)
-        updateVolume()
+        volumeChanged()
     }
     
     public func decreaseVolume(_ amount: Float = 0.1) {
         Control.Volume.decreaseVolume(amount)
-        updateVolume()
+        volumeChanged()
     }
     
     public func toggleMute() {
-        isMuted.toggle()
-        Control.Volume.toggleMute()
-        updateVolume()
+        Control.Volume.isMuted.toggle()
+        volumeChanged()
     }
 }
 
 private extension VolumeController {
     
-    func updateVolume() {
+    func volumeChanged() {
         volume = Control.Volume.volume
+        isMuted = Control.Volume.isMuted
     }
 }

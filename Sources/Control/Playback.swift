@@ -31,7 +31,7 @@ public extension Control.Playback {
     
     enum AppleMusic {
         
-        /// Subscribe to `isPlaying` via ``AppleMusicController.isPlaying`` `@Published` property.
+        /// Subscribe to `isPlaying` via ``AppleMusicController/isPlaying`` `@Published` property.
         package static var isPlaying: Bool { systemMusicPlayer.playbackState.isPlaying }
         
         nonisolated(unsafe)

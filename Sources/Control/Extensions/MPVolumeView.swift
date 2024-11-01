@@ -17,23 +17,19 @@ extension MPVolumeView {
     }
     
     static func increaseVolume(_ amount: Float) {
-        guard volume < 1 else {
+        guard volume <= 1 else {
             print("🚨 Volume is already at max")
             return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-            volume += amount
-        }
+        volume = max(1, volume + amount)
     }
     
     static func decreaseVolume(_ amount: Float) {
-        guard volume > 0 else {
+        guard volume >= 0 else {
             print("🚨 Volume is already at min")
             return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-            volume -= amount
-        }
+        volume = min(0, volume - amount)
     }
 }
 

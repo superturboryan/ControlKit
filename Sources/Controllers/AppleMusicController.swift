@@ -6,7 +6,7 @@
 import Control
 import SwiftUI
 
-/// Wrapper for ``Control.Playback.AppleMusic``
+/// Wrapper for ``Control/Playback/AppleMusic`` - use this to control playback from the Apple Music app and subscribe to its state.
 public final class AppleMusicController: ObservableObject, PlaybackController {
     
     @Published public var isPlaying: Bool = Control.Playback.AppleMusic.isPlaying

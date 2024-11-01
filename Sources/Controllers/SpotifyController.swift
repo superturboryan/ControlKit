@@ -6,7 +6,7 @@
 import SpotifyiOS
 import SwiftUI
 
-/// Wrapper for ``SPTAppRemote``.
+/// Wrapper for ``SPTAppRemote`` - use this to control playback from the Spotify app.
 public final class SpotifyController: NSObject, ObservableObject {
     
     lazy private var remote: SPTAppRemote = {

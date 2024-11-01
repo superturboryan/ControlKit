@@ -3,6 +3,7 @@
 //  ControlKit
 //
 
+import Control
 import OSLog
 import SpotifyiOS
 import SwiftUI
@@ -26,7 +27,7 @@ public final class SpotifyController: NSObject, ObservableObject {
         return remote
     }()
     
-    @AppStorage("SpotifyAccessToken")
+    @Control.Keychain("SpotifyAccessToken", default: nil)
     private var accessToken: String?
     
     override public init() {

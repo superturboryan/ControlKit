@@ -1,0 +1,44 @@
+name: 🧹 Lint
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types: [opened, synchronize]
+  
+  # push:
+    # Every push if left empty
+
+jobs:
+  
+  lint-code:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
+
+      - name: Check last commit for skip keyword
+        run: python workflow_scripts/check_latest_commit_for_skip.py >> $GITHUB_ENV
+      
+      - name: ⏩ SKIPPING REMAINING STEPS 👀
+        if: env.should_skip == 'true'
+        run: exit 0
+
+      - name: Set up Ruby
+        if: env.should_skip == 'false'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.5' # latest stable as of 2 November 2024
+      
+      - name: Install SwiftLint
+        if: env.should_skip == 'false'
+        run: brew install swiftlint
+  
+      - name: Lint code using SwiftLint
+        if: env.should_skip == 'false'
+        run: swiftlint --strict

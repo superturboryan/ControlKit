@@ -10,9 +10,9 @@ import SwiftUI
 @MainActor
 public final class SystemController: ObservableObject {
     
-    public enum PlaybackType { case AppleMusic, Spotify, AVAudio }
+    public enum PlaybackType { case appleMusic, spotify, avAudio }
     
-    @Published public var selectedPlaybackType: PlaybackType = .AVAudio
+    @Published public var selectedPlaybackType: PlaybackType = .avAudio
     
     @Published public var isAudioPlaying = false
     @Published public var isMuted = false
@@ -29,11 +29,11 @@ extension SystemController: @preconcurrency PlaybackController {
     public func togglePlayPause() {
         switch selectedPlaybackType {
             
-        case .AppleMusic:
+        case .appleMusic:
             appleMusic.togglePlayPause()
-        case .Spotify:
+        case .spotify:
             spotify.togglePlayPause()
-        case .AVAudio:
+        case .avAudio:
             Control.Playback.togglePlayPause()
         }
         
@@ -43,11 +43,11 @@ extension SystemController: @preconcurrency PlaybackController {
     public func skipToNextTrack() {
         switch selectedPlaybackType {
             
-        case .AppleMusic:
+        case .appleMusic:
             appleMusic.skipToNextTrack()
-        case .Spotify:
+        case .spotify:
             spotify.skipToNextTrack()
-        case .AVAudio:
+        case .avAudio:
             appleMusic.skipToNextTrack()
             spotify.skipToNextTrack()
         }
@@ -56,11 +56,11 @@ extension SystemController: @preconcurrency PlaybackController {
     public func skipToPreviousTrack() {
         switch selectedPlaybackType {
             
-        case .AppleMusic:
+        case .appleMusic:
             appleMusic.skipToPreviousTrack()
-        case .Spotify:
+        case .spotify:
             spotify.skipToPreviousTrack()
-        case .AVAudio:
+        case .avAudio:
             appleMusic.skipToPreviousTrack()
             spotify.skipToPreviousTrack()
         }
@@ -69,11 +69,11 @@ extension SystemController: @preconcurrency PlaybackController {
     private func updateIsAudioPlaying() {
         switch selectedPlaybackType {
             
-        case .AppleMusic:
+        case .appleMusic:
             isAudioPlaying = appleMusic.isPlaying
-        case .Spotify:
+        case .spotify:
             isAudioPlaying = spotify.isPlaying
-        case .AVAudio:
+        case .avAudio:
             isAudioPlaying = Control.Playback.isAudioPlaying
         }
     }

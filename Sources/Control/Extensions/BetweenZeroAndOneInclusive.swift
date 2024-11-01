@@ -3,7 +3,6 @@
 //  ControlKit
 //
 
-
 @propertyWrapper
 struct BetweenZeroAndOneInclusive {
     private var value: Float

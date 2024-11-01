@@ -1,0 +1,15 @@
+disabled_rules:
+  - trailing_whitespace
+  - trailing_comma
+  - void_function_in_ternary
+#  - force_cast
+
+opt_in_rules:
+  - closure_spacing
+  - identifier_name
+
+# Customize line length settings
+line_length:
+  warning: 110
+  error: 150
+  ignores_comments: true

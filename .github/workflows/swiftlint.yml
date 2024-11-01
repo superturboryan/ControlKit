@@ -1,0 +1,26 @@
+name: SwiftLint
+
+on:
+  # Trigger the workflow on push and pull requests to specified branches.
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.5' # or the latest version available
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint --strict

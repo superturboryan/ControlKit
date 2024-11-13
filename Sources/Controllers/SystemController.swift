@@ -6,11 +6,21 @@
 import Control
 import SwiftUI
 
-/// Controller of controllers 👑
+/// 🎛️ Manages volume control and media playback across multiple apps.
+///
+/// This class provides an interface for controlling playback and volume for different media sources,
+/// including Apple Music, Spotify, and apps that use `AVAudioSession` to play media.
+///
+/// It allows you to monitor playback state (whether audio is playing), mute status, and the current playback source.
+/// You can switch between playback types, controlling the appropriate media source as needed.
 @MainActor
 public final class SystemController: ObservableObject {
     
-    public enum PlaybackType { case appleMusic, spotify, avAudio }
+    public enum PlaybackType {
+        case appleMusic
+        case spotify
+        case avAudio
+    }
     
     @Published public var selectedPlaybackType: PlaybackType = .avAudio
     
@@ -28,7 +38,7 @@ public final class SystemController: ObservableObject {
 
 extension SystemController: PlaybackController {
     
-    /// Toggles play-pause according to the `selectedPlaybackType`, mimicking the playback controls in Control Center.
+    /// Toggles play-pause according to the ``selectedPlaybackType``, mimicking the playback controls in Control Center.
     public func togglePlayPause() {
         switch selectedPlaybackType {
             
@@ -43,9 +53,9 @@ extension SystemController: PlaybackController {
         updateIsAudioPlaying()
     }
     
-    /// Skips to the next track according to the `selectedPlaybackType`, mimicking the playback controls in Control Center.
+    /// Skips to the next track according to the ``selectedPlaybackType``, mimicking the playback controls in Control Center.
     ///
-    /// - Note: When `avAudio` is the `selectedPlaybackType` this method will attempt to skip to the next track for **both
+    /// - Note: When `avAudio` is the ``selectedPlaybackType`` this method will attempt to skip to the next track for **both
     /// the Apple Music and Spotify apps**. It's not possible to skip to the next track for apps besides Apple Music and Spotify.
     public func skipToNextTrack() {
         switch selectedPlaybackType {
@@ -60,9 +70,9 @@ extension SystemController: PlaybackController {
         }
     }
     
-    /// Skips to the previous track according to the `selectedPlaybackType`, mimicking the playback controls in Control Center.
+    /// Skips to the previous track according to the ``selectedPlaybackType``, mimicking the playback controls in Control Center.
     ///
-    /// - Note: When `avAudio` is the `selectedPlaybackType` this method will attempt to skip to the previous track for **both
+    /// - Note: When `avAudio` is the ``selectedPlaybackType`` this method will attempt to skip to the previous track for **both
     /// the Apple Music and Spotify apps**. It's not possible to skip to the previous track for apps besides Apple Music and Spotify.
     public func skipToPreviousTrack() {
         switch selectedPlaybackType {

@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Describes a data access object used for persisting an item of generic `Codable` type `DataType`
+/// 💾 Describes a data access object used for persisting an item of generic `Codable` type.
  /// - Parameters:
 ///   - codingKey: key used to encode + decode persisted object
 public protocol DAO<DataType>: AnyObject {

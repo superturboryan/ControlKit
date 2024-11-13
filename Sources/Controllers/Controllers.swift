@@ -3,7 +3,7 @@
 //  ControlKit
 //
 
-/// Library namespace.
+/// 🎮 Library namespace.
 enum Controllers {}
 
 extension Controllers {

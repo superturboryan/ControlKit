@@ -7,10 +7,9 @@ import OSLog
 import SpotifyiOS
 import SwiftUI
 
-/// Wrapper for ``SPTAppRemote``  - use this to control playback and subscribe to the playback state of the Spotify app.
+/// 🍏 Manage playback from the **Spotify** app and subscribe to its playback state.
 ///
-/// `SpotifyController` facilitates the connection to and interaction with the Spotify app, enabling playback control and handling the authorization flow.
-///
+/// This class facilitates the connection to and interaction with the Spotify app, enabling playback control and handling the authorization flow.
 public final class SpotifyController: NSObject, ObservableObject {
     
     @Published public private(set) var isPlaying: Bool = false
@@ -47,7 +46,7 @@ public final class SpotifyController: NSObject, ObservableObject {
     ///   - autoConnect: A Boolean value that determines whether the controller should attempt to connect to Spotify automatically upon initialization.
     ///   The default value is `true`. If `true` and `config` is not `.empty`, the controller will initiate the connection.
     ///
-    /// - Warning: Saving the Spotify access token (_or any other sensitive informative)_ using **``UserDefaults``** is not recommended for production apps.
+    /// - Warning: Saving the Spotify access token (_or any other sensitive informative)_ using **`UserDefaults`** is not recommended for production apps.
     ///   Prefer providing a `DAO` that persists values to the Keychain 🔐
     ///
     public init(
@@ -130,14 +129,17 @@ public final class SpotifyController: NSObject, ObservableObject {
 
 extension SpotifyController: PlaybackController {
     
+    /// Toggles playback and updates the ``isPlaying`` **`@Published`** property.
     public func togglePlayPause() {
         remote.togglePlayPause()
     }
     
+    /// Sends the "next track command" to the **Spotify** app.
     public func skipToNextTrack() {
         remote.playerAPI?.skip(toNext: nil)
     }
     
+    /// Sends the "previous track command" to the **Spotify** app.
     public func skipToPreviousTrack() {
         remote.playerAPI?.skip(toPrevious: nil)
     }
@@ -189,26 +191,4 @@ extension SpotifyController {
     }
     
     private static let log = Logger(subsystem: Controllers.subsystem, category: "SpotifyController")
-}
-
-private extension SPTAppRemote {
-    
-    func togglePlayPause() {
-        playerAPI?.getPlayerState { [weak self] result, error in
-            guard
-                let self,
-                error == nil,
-                let state = result as? SPTAppRemotePlayerState
-            else {
-                Logger(subsystem: Controllers.subsystem, category: "SPTAppRemote_Extension")
-                    .error("Failed to get player state with error: \(error?.localizedDescription ?? "🤷‍♂️")")
-                return
-            }
-            if state.isPaused {
-                playerAPI?.resume(nil)
-            } else {
-                playerAPI?.pause(nil)
-            }
-        }
-    }
 }

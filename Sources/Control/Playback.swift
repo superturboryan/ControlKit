@@ -9,17 +9,24 @@ import OSLog
 
 public extension Control {
     
+    /// ⏯️ Access and control the device's playback state.
     @MainActor
     enum Playback {
         
-        /// Alias for `AVAudioSession.secondaryAudioShouldBeSilencedHint`.
-        public static var isAudioPlaying: Bool { avAudioSession.secondaryAudioShouldBeSilencedHint }
-        
-        private static let avAudioSession = AVAudioSession.sharedInstance()
-        
-        /// Toggles system media playback by activating or disactivating the shared `AVAudioSession`.
+        /// Indicates whether audio playback is currently active in another app.
         ///
-        /// Playback that has been paused by this function can normally be resumed if the app playing the content has not been terminated.
+        /// This property checks `AVAudioSession.secondaryAudioShouldBeSilencedHint` to determine if audio is playing
+        /// in another app. When `true`, it suggests that another app’s audio playback should silence secondary audio in your app.
+        public static var isAudioPlaying: Bool {
+            avAudioSession.secondaryAudioShouldBeSilencedHint
+        }
+        
+        /// Toggles system media playback by activating or deactivating the shared `AVAudioSession`.
+        ///
+        /// This function pauses or resumes media playback across the system. If playback is paused by this function, it can typically be
+        /// resumed, provided the app playing the content has not been terminated.
+        ///
+        /// - Note: This method uses the `.notifyOthersOnDeactivation` option to inform other audio sessions of state changes.
         public static func togglePlayPause() {
             do {
                 try avAudioSession.setActive(
@@ -35,15 +42,21 @@ public extension Control {
 
 public extension Control.Playback {
     
+    /// 🍎 Manage playback from the **Apple Music** app.
     @MainActor
     enum AppleMusic {
         
-        /// Subscribe to `isPlaying` via ``AppleMusicController/isPlaying`` `@Published` property.
-        package static var isPlaying: Bool { systemMusicPlayer.playbackState.isPlaying }
+        /// Indicates whether media is currently being played by the **Apple Music** app.
+        ///
+        /// To monitor changes to `isPlaying`, subscribe to the **`@Published`** property `AppleMusicController/isPlaying`
+        /// from `Controllers`.
+        public static var isPlaying: Bool {
+            systemMusicPlayer.playbackState.isPlaying
+        }
         
-        nonisolated(unsafe)
-        private static let systemMusicPlayer = MPMusicPlayerController.systemMusicPlayer
-        
+        /// Toggles the playback of the **Apple Music** app.
+        ///
+        /// This method pauses playback if media is currently playing, or resumes playback if it is paused.
         public static func togglePlayPause() {
             if systemMusicPlayer.playbackState.isPlaying {
                 systemMusicPlayer.pause()
@@ -52,10 +65,16 @@ public extension Control.Playback {
             }
         }
         
+        /// Sends the "next track command" to the **Apple Music** app.
+        ///
+        /// This method advances playback to the next available item in the queue.
         public static func skipToNextTrack() {
             systemMusicPlayer.skipToNextItem()
         }
         
+        /// Sends the "previous track command" to the **Apple Music** app.
+        ///
+        /// This method advances playback to the next available item in the player's queue.
         public static func skipToPreviousTrack() {
             systemMusicPlayer.skipToPreviousItem()
         }
@@ -64,14 +83,13 @@ public extension Control.Playback {
 
 private extension Control.Playback {
     
+    static let avAudioSession = AVAudioSession.sharedInstance()
+    
     static let log = Logger(subsystem: Control.subsystem, category: "Playback")
 }
 
-private extension MPMusicPlaybackState {
+private extension Control.Playback.AppleMusic {
     
-    var isPlaying: Bool {
-        self == .playing
-        || self == .seekingForward
-        || self == .seekingBackward
-    }
+    nonisolated(unsafe)
+    static let systemMusicPlayer = MPMusicPlayerController.systemMusicPlayer
 }

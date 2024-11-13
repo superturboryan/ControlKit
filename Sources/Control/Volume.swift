@@ -7,11 +7,15 @@ import MediaPlayer
 
 public extension Control {
     
-    /// Control the system volume using the underlying `MPVolumeView`.
+    /// 🔊 Control the device's volume using the underlying `MediaPlayer/MPVolumeView`.
     @MainActor
     enum Volume {
         
-        /// Subscribe to `volume` via ``VolumeController/volume`` `@Published` property.
+        /// The device's current volume level.
+        ///
+        /// This property accesses an underlying `MediaPlayer/MPVolumeView` to read and set the volume.
+        ///
+        /// To monitor changes to `volume`, subscribe to the **`@Published`** property `VolumeController/volume` from `Controllers`.
         ///
         /// - Important: Updating this property will _unmute_ the system volume. The volume level prior to being muted will
         /// be ignored when setting the volume via this property.
@@ -27,7 +31,14 @@ public extension Control {
             }
         }
         
-        /// Subscribe to `isMuted` via ``VolumeController/isMuted`` `@Published` property.
+        /// Indicates whether the device's audio output is muted. Defaults to `false`.
+        ///
+        /// Setting this property to `true` mutes the device's audio output. When `isMuted` is set to `true`, the current volume level
+        /// is saved to ``Helpers/mutedVolumeLevel`` before the volume is set to `0`.
+        ///
+        /// When `isMuted` is set back to `false`, the saved volume level is restored.
+        ///
+        /// To monitor changes to `isMuted`, subscribe to the **`@Published`** property `VolumeController/isMuted` in `Controllers`.
         public static var isMuted = false {
             didSet {
                 if isMuted {
@@ -37,9 +48,10 @@ public extension Control {
             }
         }
         
-        /// Increments the system volume, mimicking when a user taps the volume rocker on their phone.
+        /// Increments the device's volume, mimicking when a user taps the volume rocker on their phone.
         ///
-        /// - Parameter amount: clamped between 0 and 1.0 using ``BetweenZeroAndOneInclusive``.
+        /// - Parameter amount: clamped between 0 and 1.0 using `BetweenZeroAndOneInclusive` property wrapper.
+        /// Defaults to ``Helpers/defaultVolumeStep``.
         ///
         /// - Important: Calling this function will _unmute_ the system volume. The increment amount is
         /// applied to the volume level prior to it being muted.
@@ -49,9 +61,10 @@ public extension Control {
             volume += amount
         }
         
-        /// Decrements the system volume, mimicking when a user taps the volume rocker on their phone.
+        /// Decrements the device's volume, mimicking when a user taps the volume rocker on their phone.
         ///
-        /// - Parameter amount: clamped between 0 and 1.0 using ``BetweenZeroAndOneInclusive``.
+        /// - Parameter amount: clamped between 0 and 1.0 using `BetweenZeroAndOneInclusive` property wrapper.
+        /// Defaults to ``Helpers/defaultVolumeStep``.
         ///
         /// - Important: Calling this function will _unmute_ the system volume. The decrement amount is
         /// applied to the volume level prior to it being muted.
@@ -71,6 +84,8 @@ extension Control.Volume {
         public static let defaultVolumeStep: Float = 1 / maxVolumeButtonPresses
         
         /// Refers to the volume level prior to it being muted.
+        ///
+        /// This value is updated when ``Control/Control/Volume/isMuted`` is set to `true`.
         static var mutedVolumeLevel: Float = 0
         
         /// Refers to the number of (volume rocker) button presses it takes for the phone's volume to go from 0 to max.

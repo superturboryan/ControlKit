@@ -3,7 +3,7 @@
 //  ControlKit
 //
 
-/// Library namespace.
+/// 🕹️ Library namespace.
 public enum Control {}
 
 extension Control {

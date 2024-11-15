@@ -3,9 +3,9 @@
 
 # ControlKit
 
-**ControlKit** is a minimal Swift Package enabling control of media playback and system volume.  
+**ControlKit** is a minimal Swift Package enabling control of media playback and device volume.  
 
-![Minimum iOS Version](https://img.shields.io/badge/%F0%9F%93%B1%20iOS-15%2B-blue.svg) ![Build Status](https://github.com/superturboryan/ControlKit/workflows/%F0%9F%A7%A9%20Build%20Package/badge.svg) ![Lint](https://github.com/superturboryan/ControlKit/workflows/%F0%9F%A7%B9%20Lint/badge.svg) ![Contributors](https://img.shields.io/github/contributors/superturboryan/ci-playground)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsuperturboryan%2FControlKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/superturboryan/ControlKit) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fsuperturboryan%2FControlKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/superturboryan/ControlKit) ![Build Status](https://github.com/superturboryan/ControlKit/workflows/%F0%9F%A7%A9%20Build%20Package/badge.svg) ![Lint](https://github.com/superturboryan/ControlKit/workflows/%F0%9F%A7%B9%20Lint/badge.svg) ![Contributors](https://img.shields.io/github/contributors/superturboryan/ci-playground)
 
 ### TLDR 
 
@@ -58,7 +58,7 @@ You must provide an object conforming to **`DAO<String>`** if you want the acces
 import Control
 
 // 🔊 Decrement system volume
-Control.Volume.decreaseVolume()
+Control.Volume.decrease()
 
 // 🕵️‍♂️ Check if audio is being played (by another app)
 if Control.Playback.isAudioPlaying { 
@@ -104,7 +104,6 @@ import SwiftUI
 
 // Secrets.swift 🔐
 // Don't forget to gitignore this 🙈
-
 enum Secrets {
     static let clientID = "<your client id>"
 }

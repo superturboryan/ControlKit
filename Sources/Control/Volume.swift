@@ -86,7 +86,7 @@ extension Control.Volume {
         /// Refers to the volume level prior to it being muted.
         ///
         /// This value is updated when ``Control/Control/Volume/isMuted`` is set to `true`.
-        static var mutedVolumeLevel: Float = 0
+        public internal(set) static var mutedVolumeLevel: Float = 0
         
         /// Refers to the number of (volume rocker) button presses it takes for the phone's volume to go from 0 to max.
         private static let maxVolumeButtonPresses: Float = 16

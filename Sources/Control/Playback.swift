@@ -34,7 +34,7 @@ public extension Control {
                     options: .notifyOthersOnDeactivation
                 )
             } catch {
-                log.error("\(error.localizedDescription)")
+                log.error("Failed to activate AVAudioSession: \(error.localizedDescription)")
             }
         }
     }
@@ -83,7 +83,15 @@ public extension Control.Playback {
 
 private extension Control.Playback {
     
-    static let avAudioSession = AVAudioSession.sharedInstance()
+    static let avAudioSession: AVAudioSession = {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(.playback)
+        } catch {
+            log.error("Failed to set AVAudioSession category: \(error.localizedDescription)")
+        }
+        return session
+    }()
     
     static let log = Logger(subsystem: Control.subsystem, category: "Playback")
 }

@@ -46,6 +46,16 @@ extension Control.Flashlight {
         }
     }
     
+    public static func blink(count: Int = 1, interval: TimeInterval = 0.1) {
+        Task {
+            for _ in 0..<count {
+                toggle()
+                try? await Task.sleep(nanoseconds: UInt64(1e+9 * interval))
+                toggle()
+            }
+        }
+    }
+    
     private static var deviceWithFlashlight: AVCaptureDevice? {
         guard
             let device = AVCaptureDevice.default(for: .video),

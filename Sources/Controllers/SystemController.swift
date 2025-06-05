@@ -32,7 +32,10 @@ public final class SystemController: ObservableObject {
     @Published public private(set) var volume = VolumeController()
         
     public init(spotifyConfig: SpotifyController.SpotifyConfig = .empty) {
-        spotify = SpotifyController(config: spotifyConfig)
+        spotify = SpotifyController(
+            config: spotifyConfig,
+            accessTokenDAO: UserDefaultsDAO("SpotifyAccessToken")
+        )
     }
 }
 

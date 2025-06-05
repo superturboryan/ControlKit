@@ -12,7 +12,8 @@ import SwiftUI
 /// This class facilitates the connection to and interaction with the Spotify app, enabling playback control and handling the authorization flow.
 public final class SpotifyController: NSObject, ObservableObject {
     
-    @Published public private(set) var isPlaying: Bool = false
+    @Published public private(set) var isPlaying = false
+    @Published public private(set) var isConnected = false
     
     private lazy var remote: SPTAppRemote = {
         let remote = SPTAppRemote(
@@ -149,14 +150,17 @@ extension SpotifyController: SPTAppRemoteDelegate {
     
     public func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
         SpotifyController.log.info("SPTAppRemoteDelegate.appRemoteDidEstablishConnection")
+        isConnected = true
     }
     
     public func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: (any Error)?) {
         SpotifyController.log.info("SPTAppRemoteDelegate.didFailConnectionAttemptWithError")
+        isConnected = false
     }
     
     public func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: (any Error)?) {
         SpotifyController.log.info("SPTAppRemoteDelegate.didDisconnectWithError")
+        isConnected = false
     }
 }
 

@@ -43,6 +43,6 @@ public extension Control {
             }
         }
         
-        private static var dimScreenValue: CGFloat = 0
+        private static var dimScreenValue: CGFloat = Control.Screen.brightness
     }
 }
